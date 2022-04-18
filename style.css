@@ -1,0 +1,525 @@
+@import url("https://fonts.googleapis.com/css?family=Encode+Sans+Condensed:400,600");
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Glitch&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800;900&display=swap");
+:root {
+  --border-color: #44444f;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: linear-gradient(45deg, #49a09d, #5f2c82);
+  position: fixed;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  font-family: 'Encode Sans Condensed', sans-serif;
+  font-size: 1.1em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-line-pack: justify;
+      align-content: space-between;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+a {
+  color: currentColor;
+  -webkit-transition: .2s ease-in-out;
+  transition: .2s ease-in-out;
+  text-decoration: none;
+  outline: 0;
+}
+
+a:visited, a:focus, a:active, a:link {
+  text-decoration: none;
+  outline: 0;
+}
+
+h1, h2, h3, h4, h5, p {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+header {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+header h1 {
+  font-size: 1.5em;
+}
+
+h1 span {
+  font-family: 'Rubik Glitch', monospace;
+  font-weight: normal;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+.highlight {
+  background: lightblue;
+}
+
+.container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+#sudoku-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  margin-bottom: 4rem;
+}
+
+#sudoku-container .grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+#sudoku-container .row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+#sudoku-container .row:nth-child(3n) {
+  border-bottom: 3px solid var(--border-color);
+}
+
+#sudoku-container .row:first-child div {
+  border-top: none;
+}
+
+#sudoku-container .row:last-child {
+  border-bottom: none;
+}
+
+#sudoku-container .row:last-child div {
+  border-bottom: none;
+}
+
+#sudoku-container .row div:nth-child(3n) {
+  border-right: 3px solid var(--border-color);
+}
+
+#sudoku-container .row div:nth-child(3n + 4) {
+  border-left: 2px solid var(--border-color);
+}
+
+#sudoku-container .row div:first-child {
+  border-left: none;
+}
+
+#sudoku-container .row div:last-child {
+  border-right: none;
+}
+
+.sudoku-input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 2em;
+  height: 2em;
+  border: 1px solid var(--border-color);
+}
+
+.locked {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Number select popup */
+#number-select-popup {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
+  visibility: hidden;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  background: linear-gradient(45deg, #49a09d, #5f2c82);
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+#number-select-popup button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  padding-top: 1px;
+  border: none;
+  font-size: 1.05em;
+  border-right: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  background: none;
+  color: white;
+}
+
+#number-select-popup button:last-child {
+  border-right: none;
+}
+
+#number-select-popup button:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: inital;
+}
+
+#number-select-popup button.span {
+  width: 100%;
+  border: none;
+  height: 1.5em;
+}
+
+#number-select-popup .row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* Buttons */
+.button-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0 8px;
+  width: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.button-container button {
+  width: calc(100% - 16px);
+  height: 3rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 1.1rem;
+  color: white;
+  background: #6d289b;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  letter-spacing: 0.8px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+}
+
+.button-container button:disabled, .button-container button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+#solve-button {
+  display: none;
+}
+
+/* Output */
+.output-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+}
+
+#output {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 2rem;
+  width: 100%;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.error {
+  color: #e92525;
+}
+
+.correct {
+  color: #40c425;
+}
+
+/* Forms */
+#solve-form {
+  padding: 0 10px;
+  width: 100%;
+  display: none;
+}
+
+#solve-form textarea {
+  width: 100%;
+  padding: 5px;
+}
+
+#check-form {
+  display: none;
+}
+
+/* game Summary */
+#game-summary-container {
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow: hidden;
+  /* background: rgba(168, 145, 12, 0.4); */
+}
+
+#game-summary-container.show {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+#game-summary {
+  width: 500px;
+  max-width: calc(100% - 50px);
+  height: 500px;
+  z-index: 2;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  background: #fff url("summary-bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 40px 20px;
+}
+
+#game-summary p {
+  text-align: center;
+}
+
+#game-summary .header {
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+#game-summary .header h2 {
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1.5px;
+  color: white;
+  font-weight: 800;
+  text-shadow: 0 2px rgba(0, 0, 0, 0.3);
+}
+
+#game-summary .header p {
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  font-size: 0.8rem;
+  width: 90%;
+  margin: 0 auto;
+}
+
+#game-summary .summary-details {
+  text-align: center;
+  letter-spacing: 0.8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+#game-summary .summary-details h4 {
+  font-size: 1.6rem;
+  margin-top: 0.3rem;
+  color: #333;
+}
+
+#game-summary .summary-details p {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #555;
+}
+
+#game-summary .summary-details div {
+  padding-bottom: 3rem;
+  width: 50%;
+}
+
+#game-summary .summary-details .puzzle-rating {
+  padding-bottom: 0;
+}
+
+#game-summary .summary-details .puzzle-rating h4 {
+  padding-left: 34px;
+}
+
+#game-summary .summary-details .puzzle-rating span {
+  font-size: 1rem;
+  color: #6d289b;
+  vertical-align: 15%;
+  padding-left: 5px;
+}
+
+#game-summary .button-container {
+  height: auto;
+  padding: 0;
+}
+
+#game-summary .close {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  font-size: 1.8rem;
+  background: none;
+  width: 30px;
+  height: 30px;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+#game-summary #new-puzzle-button {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  margin: 0 auto;
+  text-shadow: 0 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 3px #411e58;
+          box-shadow: 0 3px #411e58;
+}
+
+@media (min-width: 700px) {
+  html, body {
+    font-size: 1.3em;
+  }
+  header {
+    height: 4em;
+    padding-top: .6em;
+  }
+  header h1 {
+    font-size: 2em;
+  }
+  #game-summary {
+    height: 550px;
+  }
+}
+/*# sourceMappingURL=style.css.map */

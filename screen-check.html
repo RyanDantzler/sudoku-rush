@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen check</title>
+</head>
+<body>
+    <h1>Page Specs</h1>
+    <h2>Width: <span id="width"></span></h2>
+    <h2>Height: <span id="height"></span></h2>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('height').innerHTML = window.innerHeight;
+            document.getElementById('width').innerHTML = window.innerWidth;
+        });
+
+        window.onresize = () => {
+            document.getElementById('height').innerHTML = window.innerHeight;
+            document.getElementById('width').innerHTML = window.innerWidth;
+        }
+    </script>
+</body>
+</html>
