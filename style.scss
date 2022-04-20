@@ -369,14 +369,18 @@ button {
 
     .puzzle-rating {
         padding-bottom: 0;
-        h4 {
-            padding-left: 34px;
+        
+        #rating-new {
+          font-variant-numeric: tabular-nums;
         }
-        span {
+
+        #rating-bonus {
             font-size: 1rem;
             color: #6d289b;
             vertical-align: 15%;
-            padding-left: 5px
+            padding-left: 5px;
+            padding-top: 8px;
+            position: absolute;
         }
     }
   }

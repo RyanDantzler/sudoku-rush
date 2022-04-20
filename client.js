@@ -2,18 +2,16 @@ const textArea = document.getElementById("text-input");
 const coordInput = document.getElementById("coord");
 const valInput = document.getElementById("val");
 const output = document.getElementById("output");
+const timeDuration = document.getElementById("time-duration");
+const ratingNew = document.getElementById("rating-new");
+const ratingBonus = document.getElementById("rating-bonus");
+const difficulty = document.getElementById("difficulty");
+const sudokuContainer = document.getElementById('sudoku-container');
 
 document.addEventListener("DOMContentLoaded", () => {
     getDemo();
     // getPuzzle();
-    // textArea.value =
-    //     "..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6..";
-    // fillpuzzle(textArea.value, true);
 });
-
-// textArea.addEventListener("input", () => {
-//     fillpuzzle(textArea.value, false);
-// });
 
 const animateCSS = (element, animation, prefix = 'animate__') => {
     // We create a Promise and return it
@@ -63,6 +61,7 @@ const getDemo = async () => {
       });
     const data = await fetch("https://sudoku-solver.ryandantzler.repl.co/api/demo", { // /" + params.id, {
         method: "GET",
+        credentials: 'include',
         headers: {
             "Accept": "application/json"
         }
@@ -73,6 +72,7 @@ const getDemo = async () => {
         return;
     }
     textArea.value = parsed.puzzle;
+    difficulty.innerHTML = parsed.difficulty.charAt(0).toUpperCase() + parsed.difficulty.slice(1);
     fillpuzzle(parsed.puzzle, true);
 }
 
@@ -82,6 +82,7 @@ const getPuzzle = async () => {
       });
     const data = await fetch("https://sudoku-solver.ryandantzler.repl.co/api/puzzle/" + params.id, {
         method: "GET",
+        credentials: 'include',
         headers: {
             "Accept": "application/json"
         }
@@ -93,12 +94,13 @@ const getPuzzle = async () => {
         return;
     }
     textArea.value = parsed.puzzle;
+    difficulty.innerHTML = parsed.difficulty.charAt(0).toUpperCase() + parsed.difficulty.slice(1);
     fillpuzzle(parsed.puzzle, true);
 }
 
 const getSolved = async () => {
-    const stuff = { "puzzle": textArea.value }
-    if (stuff.puzzle.indexOf('.') >= 0) {
+    const inputs = { "puzzle": textArea.value }
+    if (inputs.puzzle.indexOf('.') >= 0) {
         output.classList = 'error';
         output.innerHTML = `You cheated!`;
         return;
@@ -110,7 +112,7 @@ const getSolved = async () => {
             "Accept": "application/json",
             "Content-type": "application/json"
         },
-        body: JSON.stringify(stuff)
+        body: JSON.stringify(inputs)
     })
     const parsed = await data.json();
     if (parsed.error) {
@@ -121,31 +123,32 @@ const getSolved = async () => {
 }
 
 const getChecked = async () => {
-    const stuff = { "puzzle": textArea.value, "coordinate": coordInput.value, "value": valInput.value }
+    const inputs = { "puzzle": textArea.value, "coordinate": coordInput.value, "value": valInput.value }
     const data = await fetch("https://sudoku-solver.ryandantzler.repl.co/api/check", {
         method: "POST",
         headers: {
             "Accept": "application/json",
             "Content-type": "application/json"
         },
-        body: JSON.stringify(stuff)
+        body: JSON.stringify(inputs)
     })
     const parsed = await data.json();
     output.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`;
 }
 
 const validatePuzzle = async () => {
-    const stuff = { "puzzle": textArea.value }
-    if (stuff.puzzle.indexOf('.') >= 0)
+    const inputs = { "puzzle": textArea.value }
+    if (textArea.value.indexOf('.') >= 0)
         return;
 
     const data = await fetch("https://sudoku-solver.ryandantzler.repl.co/api/solve", {
         method: "POST",
+        credentials: 'include',
         headers: {
             "Accept": "application/json",
             "Content-type": "application/json"
         },
-        body: JSON.stringify(stuff)
+        body: JSON.stringify(inputs)
     })
     const parsed = await data.json();
     if (parsed.error) {
@@ -155,6 +158,11 @@ const validatePuzzle = async () => {
         return false;
     }
 
+    sudokuContainer.classList = 'validated';
+    timeDuration.innerHTML = parsed.time;
+    ratingNew.innerHTML = parsed.rating;
+    setTimeout(() => { animateRating(parseInt(parsed.rating, 10), parseInt(parsed.ratingBonus, 10)) }, 1500);
+    ratingBonus.innerHTML = '+' + parsed.ratingBonus.toString();
     output.classList = 'correct';
     output.innerHTML = `CORRECT!`;
     animateCSS('#game-summary-container', 'fadeInDown');
@@ -162,9 +170,22 @@ const validatePuzzle = async () => {
     return true;
 }
 
-document.getElementById("solve-button").addEventListener("click", getSolved)
-document.getElementById("check-button").addEventListener("click", getChecked)
-document.getElementById("validate-button").addEventListener("click", validatePuzzle)
+function animateRating(rating, ratingBonus) {
+    for (let i = 1; i <= ratingBonus; i++) {
+        setTimeout(() => { ratingNew.innerHTML = rating + i }, 100 * i);
+    }
+}
+
+document.getElementById("solve-button").addEventListener("click", getSolved);
+document.getElementById("check-button").addEventListener("click", getChecked);
+document.getElementById("validate-button").addEventListener("click", function() {
+    if (sudokuContainer.classList == 'validated') {
+        animateCSS('#game-summary-container', 'fadeInDown');
+        return;
+    }
+
+    validatePuzzle();
+});
 
 $(() => {
     const popupWidth = $('#number-select-popup').outerWidth();
@@ -182,6 +203,9 @@ $(() => {
     });
 
     $('.sudoku-input:not(.locked)').on('click', function (e) {
+        if ($('#sudoku-container').hasClass('validated'))
+            return;
+
         let $this = $(this);
         let { left, top } = $this.offset();
         let cell = $this.attr('id');
@@ -232,6 +256,7 @@ $(() => {
         $('.locked').removeClass('locked');
         $('#output').text('');
         $('#validate-button').prop('disabled', true);
+        $('#sudoku-container').removeClass('validated');
         getDemo();
         animateCSS('#game-summary-container', 'fadeOutDown');
     });

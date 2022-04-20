@@ -470,15 +470,17 @@ button {
   padding-bottom: 0;
 }
 
-#game-summary .summary-details .puzzle-rating h4 {
-  padding-left: 34px;
+#game-summary .summary-details .puzzle-rating #rating-new {
+  font-variant-numeric: tabular-nums;
 }
 
-#game-summary .summary-details .puzzle-rating span {
+#game-summary .summary-details .puzzle-rating #rating-bonus {
   font-size: 1rem;
   color: #6d289b;
   vertical-align: 15%;
   padding-left: 5px;
+  padding-top: 8px;
+  position: absolute;
 }
 
 #game-summary .button-container {
